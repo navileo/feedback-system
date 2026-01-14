@@ -15,6 +15,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Request logger
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // Static folder for uploads
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
@@ -30,9 +36,13 @@ app.use('/api/upload', require('./routes/uploadRoutes'));
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-  app.get('/*path', (req, res) =>
-    res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'))
-  );
+  app.get('*', (req, res) => {
+    // If request starts with /api, don't serve index.html (let it 404 if not found)
+    if (req.url.startsWith('/api')) {
+      return res.status(404).json({ message: 'API route not found' });
+    }
+    res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+  });
 } else {
   app.get('/', (req, res) => {
     res.send('API is running...');

@@ -20,11 +20,15 @@ router.use(admin);
 
 router.route('/profile').get(getAdminProfile).put(updateAdminProfile);
 
-router.route('/faculty').get(getFaculty).post(addFaculty);
-router.route('/faculty/:id').put(updateFaculty).delete(deleteFaculty);
+router.get('/faculty', getFaculty);
+router.post('/faculty', addFaculty);
+router.put('/faculty/:id', updateFaculty);
+router.delete('/faculty/:id', deleteFaculty);
 
-router.route('/students').get(getStudents).post(addStudent);
-router.route('/students/:id').put(updateStudent).delete(deleteStudent);
+router.get('/students', getStudents);
+router.post('/students', addStudent);
+router.put('/students/:id', updateStudent);
+router.delete('/students/:id', deleteStudent);
 
 router.get('/feedback', getAllFeedback);
 

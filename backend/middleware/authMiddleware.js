@@ -9,10 +9,10 @@ const protect = async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.id).select('-password');
-      next();
+      return next();
     } catch (error) {
       console.error(error);
-      res.status(401).json({ message: 'Not authorized, token failed' });
+      return res.status(401).json({ message: 'Not authorized, token failed' });
     }
   }
 
@@ -23,25 +23,25 @@ const protect = async (req, res, next) => {
 
 const admin = (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
-    next();
+    return next();
   } else {
-    res.status(401).json({ message: 'Not authorized as an admin' });
+    return res.status(401).json({ message: 'Not authorized as an admin' });
   }
 };
 
 const faculty = (req, res, next) => {
   if (req.user && req.user.role === 'faculty') {
-    next();
+    return next();
   } else {
-    res.status(401).json({ message: 'Not authorized as faculty' });
+    return res.status(401).json({ message: 'Not authorized as faculty' });
   }
 };
 
 const student = (req, res, next) => {
   if (req.user && req.user.role === 'student') {
-    next();
+    return next();
   } else {
-    res.status(401).json({ message: 'Not authorized as a student' });
+    return res.status(401).json({ message: 'Not authorized as a student' });
   }
 };
 
