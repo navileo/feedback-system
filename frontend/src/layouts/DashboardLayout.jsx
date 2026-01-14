@@ -96,7 +96,7 @@ const DashboardLayout = ({ children }) => {
             <div className="h-12 w-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-200 ring-4 ring-blue-50 overflow-hidden">
               {user?.profilePicture ? (
                 <img 
-                  src={`http://localhost:5000${user.profilePicture}`} 
+                  src={user.profilePicture} 
                   alt="Profile" 
                   className="h-full w-full object-cover"
                 />

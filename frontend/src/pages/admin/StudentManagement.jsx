@@ -130,7 +130,7 @@ const StudentManagement = () => {
                           {s.profilePicture ? (
                             <img 
                               className="h-10 w-10 rounded-full object-cover border border-gray-100" 
-                              src={`http://localhost:5000${s.profilePicture}`} 
+                              src={s.profilePicture} 
                               alt="" 
                             />
                           ) : (

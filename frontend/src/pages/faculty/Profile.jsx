@@ -116,7 +116,7 @@ const Profile = () => {
                 <div className="h-32 w-32 bg-white/20 rounded-3xl backdrop-blur-md flex items-center justify-center mb-6 shadow-xl overflow-hidden border-2 border-white/30 transition-all group-hover:border-white">
                   {formData.profilePicture ? (
                     <img 
-                      src={`http://localhost:5000${formData.profilePicture}`} 
+                      src={formData.profilePicture} 
                       alt="Profile" 
                       className="h-full w-full object-cover"
                     />
