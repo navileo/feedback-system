@@ -18,6 +18,7 @@ const DashboardLayout = ({ children }) => {
     { name: 'Faculty Management', path: '/admin/faculty', icon: <Users size={20} /> },
     { name: 'Student Management', path: '/admin/students', icon: <UserPlus size={20} /> },
     { name: 'All Feedback', path: '/admin/feedback', icon: <MessageSquare size={20} /> },
+    { name: 'Profile', path: '/admin/profile', icon: <UserCircle size={20} /> },
   ];
 
   const facultyLinks = [

@@ -10,6 +10,7 @@ const AdminDashboard = () => {
     avgRating: 0
   });
   const [recentFeedback, setRecentFeedback] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -31,12 +32,22 @@ const AdminDashboard = () => {
           avgRating: avg
         });
         setRecentFeedback(feedbackData.slice(0, 5));
+        setLoading(false);
       } catch (err) {
         console.error('Error fetching stats:', err);
+        setLoading(false);
       }
     };
     fetchStats();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

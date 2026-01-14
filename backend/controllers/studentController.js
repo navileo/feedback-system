@@ -4,11 +4,16 @@ const User = require('../models/User');
 // @route   GET /api/student/profile
 // @access  Private/Student
 const getStudentProfile = async (req, res) => {
-  const user = await User.findById(req.user._id);
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ message: 'Student not found' });
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'Student not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching student profile:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 

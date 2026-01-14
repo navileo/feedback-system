@@ -9,12 +9,16 @@ const {
   addStudent,
   updateStudent,
   deleteStudent,
-  getAllFeedback
+  getAllFeedback,
+  getAdminProfile,
+  updateAdminProfile
 } = require('../controllers/adminController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
 router.use(protect);
 router.use(admin);
+
+router.route('/profile').get(getAdminProfile).put(updateAdminProfile);
 
 router.route('/faculty').get(getFaculty).post(addFaculty);
 router.route('/faculty/:id').put(updateFaculty).delete(deleteFaculty);

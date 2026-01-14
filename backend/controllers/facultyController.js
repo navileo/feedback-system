@@ -14,11 +14,16 @@ const getFacultyFeedback = async (req, res) => {
 // @route   GET /api/faculty/profile
 // @access  Private/Faculty
 const getFacultyProfile = async (req, res) => {
-  const user = await User.findById(req.user._id);
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ message: 'Faculty not found' });
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'Faculty not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching faculty profile:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 

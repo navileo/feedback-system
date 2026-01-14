@@ -85,6 +85,61 @@ const getStudents = async (req, res) => {
   res.json(students);
 };
 
+// @desc    Get admin profile
+// @route   GET /api/admin/profile
+// @access  Private/Admin
+const getAdminProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'Admin not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching admin profile:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Update admin profile
+// @route   PUT /api/admin/profile
+// @access  Private/Admin
+const updateAdminProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.department = req.body.department || user.department;
+      user.contact = req.body.contact || user.contact;
+      user.profilePicture = req.body.profilePicture || user.profilePicture;
+      
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      const updatedUser = await user.save();
+
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        department: updatedUser.department,
+        contact: updatedUser.contact,
+        profilePicture: updatedUser.profilePicture
+      });
+    } else {
+      res.status(404).json({ message: 'Admin not found' });
+    }
+  } catch (error) {
+    console.error('Error updating admin profile:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 // @desc    Add new student
 // @route   POST /api/admin/students
 // @access  Private/Admin
@@ -172,5 +227,7 @@ module.exports = {
   addStudent,
   updateStudent,
   deleteStudent,
-  getAllFeedback
+  getAllFeedback,
+  getAdminProfile,
+  updateAdminProfile
 };

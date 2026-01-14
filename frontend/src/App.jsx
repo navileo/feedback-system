@@ -10,6 +10,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import FacultyManagement from './pages/admin/FacultyManagement';
 import StudentManagement from './pages/admin/StudentManagement';
 import AllFeedback from './pages/admin/AllFeedback';
+import AdminProfile from './pages/admin/Profile';
 
 // Faculty Pages
 import FacultyDashboard from './pages/faculty/FacultyDashboard';
@@ -42,6 +43,7 @@ function App() {
           <Route path="/admin/faculty" element={<PrivateRoute role="admin"><FacultyManagement /></PrivateRoute>} />
           <Route path="/admin/students" element={<PrivateRoute role="admin"><StudentManagement /></PrivateRoute>} />
           <Route path="/admin/feedback" element={<PrivateRoute role="admin"><AllFeedback /></PrivateRoute>} />
+          <Route path="/admin/profile" element={<PrivateRoute role="admin"><AdminProfile /></PrivateRoute>} />
           
           {/* Faculty Routes */}
           <Route path="/faculty/dashboard" element={<PrivateRoute role="faculty"><FacultyDashboard /></PrivateRoute>} />
