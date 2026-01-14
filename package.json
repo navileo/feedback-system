@@ -1,0 +1,16 @@
+{
+  "name": "feedback-system",
+  "version": "1.0.0",
+  "description": "Online Feedback Management System",
+  "scripts": {
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && node index.js",
+    "server": "cd backend && node index.js",
+    "client": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
