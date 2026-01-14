@@ -163,4 +163,4 @@ The system is designed with a **Mobile-First Approach**. Whether you are an admi
 
 ---
 
-*Built with ❤️ for a better academic experience.*
+*Built with ❤️ for a better experience.*

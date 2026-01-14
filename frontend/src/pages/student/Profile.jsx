@@ -28,8 +28,8 @@ const Profile = () => {
           ...formData,
           name: data.name,
           email: data.email,
-          studentId: data.studentId,
-          department: data.department,
+          studentId: data.studentId || '',
+          department: data.department || '',
           contact: data.contact || '',
           profilePicture: data.profilePicture || ''
         });

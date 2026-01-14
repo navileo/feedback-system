@@ -15,19 +15,27 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [faculty, students, feedback] = await Promise.all([
+        const results = await Promise.allSettled([
           API.get('/admin/faculty'),
           API.get('/admin/students'),
           API.get('/admin/feedback')
         ]);
         
-        const feedbackData = feedback.data;
-        const totalRating = feedbackData.reduce((acc, curr) => acc + curr.rating, 0);
+        const faculty = results[0].status === 'fulfilled' ? results[0].value : { data: [] };
+        const students = results[1].status === 'fulfilled' ? results[1].value : { data: [] };
+        const feedback = results[2].status === 'fulfilled' ? results[2].value : { data: [] };
+
+        if (results.some(r => r.status === 'rejected')) {
+          console.error('Some stats failed to fetch:', results.filter(r => r.status === 'rejected'));
+        }
+        
+        const feedbackData = feedback.data || [];
+        const totalRating = feedbackData.reduce((acc, curr) => acc + (curr.rating || 0), 0);
         const avg = feedbackData.length > 0 ? totalRating / feedbackData.length : 0;
 
         setStats({
-          facultyCount: faculty.data.length,
-          studentCount: students.data.length,
+          facultyCount: (faculty.data || []).length,
+          studentCount: (students.data || []).length,
           feedbackCount: feedbackData.length,
           avgRating: avg
         });
@@ -115,20 +123,20 @@ const AdminDashboard = () => {
               recentFeedback.map((f) => (
                 <div key={f._id} className="flex items-start p-6 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200">
                   <div className="h-12 w-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-blue-600 font-bold text-lg mr-5 shrink-0 border border-gray-100">
-                    {f.facultyId?.name?.charAt(0)}
+                    {f.faculty?.name?.charAt(0)}
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-bold text-gray-900">{f.facultyId?.name}</h4>
-                        <p className="text-xs font-bold text-blue-600 uppercase tracking-wide">{f.facultyId?.department}</p>
+                        <h4 className="font-bold text-gray-900">{f.faculty?.name}</h4>
+                        <p className="text-xs font-bold text-blue-600 uppercase tracking-wide">{f.faculty?.department}</p>
                       </div>
                       <div className="flex items-center bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-50">
                         <Star className="text-yellow-400 mr-1 fill-current" size={14} />
                         <span className="font-bold text-gray-900">{f.rating}</span>
                       </div>
                     </div>
-                    <p className="text-gray-600 mt-3 text-sm leading-relaxed italic">"{f.comment}"</p>
+                    <p className="text-gray-600 mt-3 text-sm leading-relaxed italic">"{f.comments}"</p>
                     <p className="text-[10px] font-bold text-gray-400 mt-3 uppercase tracking-widest">
                       {new Date(f.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>

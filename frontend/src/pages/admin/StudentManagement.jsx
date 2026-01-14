@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from '../../api';
-import { Edit, Trash2, Plus, Search } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, RefreshCw } from 'lucide-react';
 
 const StudentManagement = () => {
   const [students, setStudents] = useState([]);
@@ -22,12 +22,15 @@ const StudentManagement = () => {
   }, []);
 
   const fetchStudents = async () => {
+    setLoading(true);
     try {
       const { data } = await API.get('/admin/students');
       setStudents(data);
-      setLoading(false);
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching students:', err);
+      alert('Failed to fetch student list');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,11 +56,11 @@ const StudentManagement = () => {
   const handleEdit = (s) => {
     setCurrentStudent(s);
     setFormData({
-      name: s.name,
-      email: s.email,
-      studentId: s.studentId,
-      department: s.department,
-      contact: s.contact,
+      name: s.name || '',
+      email: s.email || '',
+      studentId: s.studentId || '',
+      department: s.department || '',
+      contact: s.contact || '',
       password: ''
     });
     setShowModal(true);
@@ -75,22 +78,36 @@ const StudentManagement = () => {
   };
 
   const filteredStudents = students.filter(s => 
-    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.studentId.toLowerCase().includes(searchTerm.toLowerCase())
+    (s.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (s.email?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (s.studentId?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (s.department?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-2xl font-bold text-gray-800">Student Management</h3>
-        <button
-          onClick={() => { setCurrentStudent(null); setFormData({ name: '', email: '', password: '', studentId: '', department: '', contact: '' }); setShowModal(true); }}
-          className="bg-green-600 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-green-700"
-        >
-          <Plus size={20} />
-          <span>Add Student</span>
-        </button>
+        <div className="flex space-x-3">
+          <button 
+             onClick={fetchStudents}
+             className="flex items-center space-x-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 transition-all active:scale-95"
+           >
+             <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+             <span>Refresh</span>
+           </button>
+          <button 
+            onClick={() => {
+              setCurrentStudent(null);
+              setFormData({ name: '', email: '', password: '', studentId: '', department: '', contact: '' });
+              setShowModal(true);
+            }}
+            className="flex items-center space-x-2 px-8 py-4 bg-green-600 text-white rounded-2xl font-black shadow-lg shadow-green-200 hover:bg-green-700 transition-all active:scale-95"
+          >
+            <Plus size={20} />
+            <span>Add Student Member</span>
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -99,7 +116,7 @@ const StudentManagement = () => {
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="text"
-              placeholder="Search by name, email or ID..."
+              placeholder="Search by name, email, ID or department..."
               className="pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-2xl w-full outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-900 shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -108,13 +125,23 @@ const StudentManagement = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+            </div>
+          ) : filteredStudents.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 font-medium italic">No students found.</p>
+            </div>
+          ) : (
+            <table className="w-full text-left">
             <thead>
               <tr className="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-wider font-bold">
                 <th className="px-8 py-5">Student ID</th>
                 <th className="px-8 py-5">Student</th>
                 <th className="px-8 py-5">Email</th>
                 <th className="px-8 py-5">Department</th>
+                <th className="px-8 py-5">Contact</th>
                 <th className="px-8 py-5 text-right">Actions</th>
               </tr>
             </thead>
@@ -137,7 +164,7 @@ const StudentManagement = () => {
                             />
                           ) : (
                             <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold">
-                              {s.name.charAt(0)}
+                              {s.name?.charAt(0)}
                             </div>
                           )}
                         </div>
@@ -150,6 +177,7 @@ const StudentManagement = () => {
                       {s.department}
                     </span>
                   </td>
+                  <td className="px-8 py-5 text-gray-600 font-medium">{s.contact || '-'}</td>
                   <td className="px-8 py-5 text-right">
                     <div className="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button onClick={() => handleEdit(s)} className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors">
@@ -164,6 +192,7 @@ const StudentManagement = () => {
               ))}
             </tbody>
           </table>
+          )}
         </div>
       </div>
 

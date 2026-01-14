@@ -57,6 +57,7 @@ const updateFacultyProfile = async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         role: updatedUser.role,
+        facultyId: updatedUser.facultyId,
         department: updatedUser.department,
         contact: updatedUser.contact,
         profilePicture: updatedUser.profilePicture
