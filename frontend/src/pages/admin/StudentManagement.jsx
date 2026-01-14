@@ -44,7 +44,9 @@ const StudentManagement = () => {
       setFormData({ name: '', email: '', password: '', studentId: '', department: '', contact: '' });
       fetchStudents();
     } catch (err) {
-      alert(err.response?.data?.message || 'Error saving student');
+      console.error('Error saving student:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Error saving student';
+      alert(errorMessage);
     }
   };
 

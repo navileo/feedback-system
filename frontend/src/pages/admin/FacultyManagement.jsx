@@ -44,7 +44,9 @@ const FacultyManagement = () => {
       setFormData({ name: '', email: '', password: '', facultyId: '', department: '', contact: '' });
       fetchFaculty();
     } catch (err) {
-      alert(err.response?.data?.message || 'Error saving faculty');
+      console.error('Error saving faculty:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Error saving faculty';
+      alert(errorMessage);
     }
   };
 

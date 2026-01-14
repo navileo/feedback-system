@@ -21,11 +21,18 @@ const addFaculty = async (req, res) => {
   try {
     const { name, email, password, facultyId, department, contact } = req.body;
 
-    const userExists = await User.findOne({ email });
+    // Check if email already exists
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
+      return res.status(400).json({ message: 'A user with this email already exists' });
+    }
 
-    if (userExists) {
-      res.status(400).json({ message: 'User already exists' });
-      return;
+    // Check if facultyId already exists
+    if (facultyId) {
+      const idExists = await User.findOne({ facultyId });
+      if (idExists) {
+        return res.status(400).json({ message: 'A faculty with this ID already exists' });
+      }
     }
 
     const faculty = await User.create({
@@ -172,11 +179,18 @@ const addStudent = async (req, res) => {
   try {
     const { name, email, password, studentId, department, contact } = req.body;
 
-    const userExists = await User.findOne({ email });
+    // Check if email already exists
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
+      return res.status(400).json({ message: 'A user with this email already exists' });
+    }
 
-    if (userExists) {
-      res.status(400).json({ message: 'User already exists' });
-      return;
+    // Check if studentId already exists
+    if (studentId) {
+      const idExists = await User.findOne({ studentId });
+      if (idExists) {
+        return res.status(400).json({ message: 'A student with this ID already exists' });
+      }
     }
 
     const student = await User.create({

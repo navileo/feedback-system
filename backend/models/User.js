@@ -22,8 +22,16 @@ const userSchema = new mongoose.Schema({
   },
   department: String,
   contact: String,
-  studentId: String, // For students
-  facultyId: String, // For faculty
+  studentId: {
+    type: String,
+    sparse: true,
+    unique: true
+  }, // For students
+  facultyId: {
+    type: String,
+    sparse: true,
+    unique: true
+  }, // For faculty
   profilePicture: {
     type: String,
     default: ''
