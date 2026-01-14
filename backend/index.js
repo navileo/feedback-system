@@ -36,7 +36,7 @@ app.use('/api/upload', require('./routes/uploadRoutes'));
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-  app.get('*', (req, res) => {
+  app.get('/*path', (req, res) => {
     // If request starts with /api, don't serve index.html (let it 404 if not found)
     if (req.url.startsWith('/api')) {
       return res.status(404).json({ message: 'API route not found' });
