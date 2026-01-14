@@ -5,35 +5,42 @@ const User = require('../models/User');
 // @route   POST /api/feedback
 // @access  Private/Student
 const submitFeedback = async (req, res) => {
-  const { facultyId, rating, comments } = req.body;
+  try {
+    const { facultyId, rating, comments } = req.body;
 
-  const faculty = await User.findById(facultyId);
+    const faculty = await User.findById(facultyId);
 
-  if (!faculty || faculty.role !== 'faculty') {
-    res.status(404).json({ message: 'Faculty not found' });
-    return;
-  }
+    if (!faculty || faculty.role !== 'faculty') {
+      res.status(404).json({ message: 'Faculty not found' });
+      return;
+    }
 
-  const feedback = await Feedback.create({
-    student: req.user._id,
-    faculty: facultyId,
-    rating,
-    comments
-  });
+    const feedback = await Feedback.create({
+      student: req.user._id,
+      faculty: facultyId,
+      rating,
+      comments
+    });
 
-  if (feedback) {
-    res.status(201).json(feedback);
-  } else {
-    res.status(400).json({ message: 'Invalid feedback data' });
+    if (feedback) {
+      res.status(201).json(feedback);
+    } else {
+      res.status(400).json({ message: 'Invalid feedback data' });
+    }
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
-// @desc    Get all faculty for feedback
-// @route   GET /api/feedback/faculty
-// @access  Private/Student
 const getFacultyForFeedback = async (req, res) => {
-  const faculty = await User.find({ role: 'faculty' }).select('name email department');
-  res.json(faculty);
+  try {
+    const faculty = await User.find({ role: 'faculty' }).select('name email department');
+    res.json(faculty);
+  } catch (error) {
+    console.error('Error fetching faculty for feedback:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 module.exports = { submitFeedback, getFacultyForFeedback };

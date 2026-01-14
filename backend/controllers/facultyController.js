@@ -5,9 +5,14 @@ const User = require('../models/User');
 // @route   GET /api/faculty/feedback
 // @access  Private/Faculty
 const getFacultyFeedback = async (req, res) => {
-  const feedback = await Feedback.find({ faculty: req.user._id })
-    .populate('student', 'name email');
-  res.json(feedback);
+  try {
+    const feedback = await Feedback.find({ faculty: req.user._id })
+      .populate('student', 'name email');
+    res.json(feedback);
+  } catch (error) {
+    console.error('Error fetching faculty feedback:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 // @desc    Get faculty profile

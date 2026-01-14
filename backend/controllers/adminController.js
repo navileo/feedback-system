@@ -5,8 +5,13 @@ const Feedback = require('../models/Feedback');
 // @route   GET /api/admin/faculty
 // @access  Private/Admin
 const getFaculty = async (req, res) => {
-  const faculty = await User.find({ role: 'faculty' });
-  res.json(faculty);
+  try {
+    const faculty = await User.find({ role: 'faculty' });
+    res.json(faculty);
+  } catch (error) {
+    console.error('Error fetching faculty:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 // @desc    Add new faculty
@@ -48,23 +53,28 @@ const addFaculty = async (req, res) => {
 // @route   PUT /api/admin/faculty/:id
 // @access  Private/Admin
 const updateFaculty = async (req, res) => {
-  const faculty = await User.findById(req.params.id);
+  try {
+    const faculty = await User.findById(req.params.id);
 
-  if (faculty && faculty.role === 'faculty') {
-    faculty.name = req.body.name || faculty.name;
-    faculty.email = req.body.email || faculty.email;
-    faculty.department = req.body.department || faculty.department;
-    faculty.contact = req.body.contact || faculty.contact;
-    faculty.facultyId = req.body.facultyId || faculty.facultyId;
+    if (faculty && faculty.role === 'faculty') {
+      faculty.name = req.body.name || faculty.name;
+      faculty.email = req.body.email || faculty.email;
+      faculty.department = req.body.department || faculty.department;
+      faculty.contact = req.body.contact || faculty.contact;
+      faculty.facultyId = req.body.facultyId || faculty.facultyId;
 
-    if (req.body.password) {
-      faculty.password = req.body.password;
+      if (req.body.password) {
+        faculty.password = req.body.password;
+      }
+
+      const updatedFaculty = await faculty.save();
+      res.json(updatedFaculty);
+    } else {
+      res.status(404).json({ message: 'Faculty not found' });
     }
-
-    const updatedFaculty = await faculty.save();
-    res.json(updatedFaculty);
-  } else {
-    res.status(404).json({ message: 'Faculty not found' });
+  } catch (error) {
+    console.error('Error updating faculty:', error);
+    res.status(500).json({ message: error.message || 'Server error' });
   }
 };
 
@@ -72,13 +82,18 @@ const updateFaculty = async (req, res) => {
 // @route   DELETE /api/admin/faculty/:id
 // @access  Private/Admin
 const deleteFaculty = async (req, res) => {
-  const faculty = await User.findById(req.params.id);
+  try {
+    const faculty = await User.findById(req.params.id);
 
-  if (faculty && faculty.role === 'faculty') {
-    await faculty.deleteOne();
-    res.json({ message: 'Faculty removed' });
-  } else {
-    res.status(404).json({ message: 'Faculty not found' });
+    if (faculty && faculty.role === 'faculty') {
+      await faculty.deleteOne();
+      res.json({ message: 'Faculty removed' });
+    } else {
+      res.status(404).json({ message: 'Faculty not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting faculty:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -86,8 +101,13 @@ const deleteFaculty = async (req, res) => {
 // @route   GET /api/admin/students
 // @access  Private/Admin
 const getStudents = async (req, res) => {
-  const students = await User.find({ role: 'student' });
-  res.json(students);
+  try {
+    const students = await User.find({ role: 'student' });
+    res.json(students);
+  } catch (error) {
+    console.error('Error fetching students:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 // @desc    Get admin profile
@@ -184,23 +204,28 @@ const addStudent = async (req, res) => {
 // @route   PUT /api/admin/students/:id
 // @access  Private/Admin
 const updateStudent = async (req, res) => {
-  const student = await User.findById(req.params.id);
+  try {
+    const student = await User.findById(req.params.id);
 
-  if (student && student.role === 'student') {
-    student.name = req.body.name || student.name;
-    student.email = req.body.email || student.email;
-    student.department = req.body.department || student.department;
-    student.contact = req.body.contact || student.contact;
-    student.studentId = req.body.studentId || student.studentId;
+    if (student && student.role === 'student') {
+      student.name = req.body.name || student.name;
+      student.email = req.body.email || student.email;
+      student.department = req.body.department || student.department;
+      student.contact = req.body.contact || student.contact;
+      student.studentId = req.body.studentId || student.studentId;
 
-    if (req.body.password) {
-      student.password = req.body.password;
+      if (req.body.password) {
+        student.password = req.body.password;
+      }
+
+      const updatedStudent = await student.save();
+      res.json(updatedStudent);
+    } else {
+      res.status(404).json({ message: 'Student not found' });
     }
-
-    const updatedStudent = await student.save();
-    res.json(updatedStudent);
-  } else {
-    res.status(404).json({ message: 'Student not found' });
+  } catch (error) {
+    console.error('Error updating student:', error);
+    res.status(500).json({ message: error.message || 'Server error' });
   }
 };
 
@@ -208,13 +233,18 @@ const updateStudent = async (req, res) => {
 // @route   DELETE /api/admin/students/:id
 // @access  Private/Admin
 const deleteStudent = async (req, res) => {
-  const student = await User.findById(req.params.id);
+  try {
+    const student = await User.findById(req.params.id);
 
-  if (student && student.role === 'student') {
-    await student.deleteOne();
-    res.json({ message: 'Student removed' });
-  } else {
-    res.status(404).json({ message: 'Student not found' });
+    if (student && student.role === 'student') {
+      await student.deleteOne();
+      res.json({ message: 'Student removed' });
+    } else {
+      res.status(404).json({ message: 'Student not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -222,10 +252,15 @@ const deleteStudent = async (req, res) => {
 // @route   GET /api/admin/feedback
 // @access  Private/Admin
 const getAllFeedback = async (req, res) => {
-  const feedback = await Feedback.find({})
-    .populate('student', 'name email')
-    .populate('faculty', 'name email department');
-  res.json(feedback);
+  try {
+    const feedback = await Feedback.find({})
+      .populate('student', 'name email')
+      .populate('faculty', 'name email department');
+    res.json(feedback);
+  } catch (error) {
+    console.error('Error fetching all feedback:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 module.exports = {
