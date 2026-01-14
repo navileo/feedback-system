@@ -13,29 +13,34 @@ const getFaculty = async (req, res) => {
 // @route   POST /api/admin/faculty
 // @access  Private/Admin
 const addFaculty = async (req, res) => {
-  const { name, email, password, facultyId, department, contact } = req.body;
+  try {
+    const { name, email, password, facultyId, department, contact } = req.body;
 
-  const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email });
 
-  if (userExists) {
-    res.status(400).json({ message: 'User already exists' });
-    return;
-  }
+    if (userExists) {
+      res.status(400).json({ message: 'User already exists' });
+      return;
+    }
 
-  const faculty = await User.create({
-    name,
-    email,
-    password,
-    role: 'faculty',
-    facultyId,
-    department,
-    contact
-  });
+    const faculty = await User.create({
+      name,
+      email,
+      password,
+      role: 'faculty',
+      facultyId,
+      department,
+      contact
+    });
 
-  if (faculty) {
-    res.status(201).json(faculty);
-  } else {
-    res.status(400).json({ message: 'Invalid faculty data' });
+    if (faculty) {
+      res.status(201).json(faculty);
+    } else {
+      res.status(400).json({ message: 'Invalid faculty data' });
+    }
+  } catch (error) {
+    console.error('Error adding faculty:', error);
+    res.status(500).json({ message: error.message || 'Server error' });
   }
 };
 
@@ -144,29 +149,34 @@ const updateAdminProfile = async (req, res) => {
 // @route   POST /api/admin/students
 // @access  Private/Admin
 const addStudent = async (req, res) => {
-  const { name, email, password, studentId, department, contact } = req.body;
+  try {
+    const { name, email, password, studentId, department, contact } = req.body;
 
-  const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email });
 
-  if (userExists) {
-    res.status(400).json({ message: 'User already exists' });
-    return;
-  }
+    if (userExists) {
+      res.status(400).json({ message: 'User already exists' });
+      return;
+    }
 
-  const student = await User.create({
-    name,
-    email,
-    password,
-    role: 'student',
-    studentId,
-    department,
-    contact
-  });
+    const student = await User.create({
+      name,
+      email,
+      password,
+      role: 'student',
+      studentId,
+      department,
+      contact
+    });
 
-  if (student) {
-    res.status(201).json(student);
-  } else {
-    res.status(400).json({ message: 'Invalid student data' });
+    if (student) {
+      res.status(201).json(student);
+    } else {
+      res.status(400).json({ message: 'Invalid student data' });
+    }
+  } catch (error) {
+    console.error('Error adding student:', error);
+    res.status(500).json({ message: error.message || 'Server error' });
   }
 };
 

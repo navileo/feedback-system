@@ -31,32 +31,37 @@ const getFacultyProfile = async (req, res) => {
 // @route   PUT /api/faculty/profile
 // @access  Private/Faculty
 const updateFacultyProfile = async (req, res) => {
-  const user = await User.findById(req.user._id);
+  try {
+    const user = await User.findById(req.user._id);
 
-  if (user) {
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-    user.department = req.body.department || user.department;
-    user.contact = req.body.contact || user.contact;
-    user.profilePicture = req.body.profilePicture || user.profilePicture;
-    
-    if (req.body.password) {
-      user.password = req.body.password;
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.department = req.body.department || user.department;
+      user.contact = req.body.contact || user.contact;
+      user.profilePicture = req.body.profilePicture || user.profilePicture;
+      
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      const updatedUser = await user.save();
+
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        department: updatedUser.department,
+        contact: updatedUser.contact,
+        profilePicture: updatedUser.profilePicture
+      });
+    } else {
+      res.status(404).json({ message: 'Faculty not found' });
     }
-
-    const updatedUser = await user.save();
-
-    res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      department: updatedUser.department,
-      contact: updatedUser.contact,
-      profilePicture: updatedUser.profilePicture
-    });
-  } else {
-    res.status(404).json({ message: 'Faculty not found' });
+  } catch (error) {
+    console.error('Error updating faculty profile:', error);
+    res.status(500).json({ message: error.message || 'Server error' });
   }
 };
 
